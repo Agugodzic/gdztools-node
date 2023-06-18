@@ -4,18 +4,105 @@ import { convertioFinalResponse } from '../../Models/fileConverter/convertioFina
 
 const config = env;
 
-function statusCheck(response){
-  if(response.status == 'ok' && response.data.step == 'finish'){
-    let finalResponse = new convertioFinalResponse(response.data.output.url,response.data.output.size,response.status,response.error)           
-    return res.json(finalResponse);
 
-  }else if(response.status == 'error'){
-    let finalResponse = new convertioFinalResponse(null,null,'error',response.error) 
-    return res.send(finalResponse);
+// ----------------- CONTROLLERS ----------------------
+
+
+
+
+
+
+
+
+
+export const  convertioPostRequest = (req,res) =>{
+  let request = req.body;
+  let requestToConvertio = new convertioRequest(config.CONVERTIO_API_KEY,request.input,request.filename,request.file,request.outputformat);
+  let conversionId = undefined;
+
+  sendFile(requestToConvertio)
+  .then(response => response.json())
+  .then( (response) => {  // A start
+
+      if(response.status == 'ok'){
+        console.log('response status = ok');
+        conversionId = response.data.id;
+        let statusConsults = 0;
+        let fileStatus = {};
+
+        const interval = setInterval(()=>{
+          statusConsults++;
+
+          getStatus(conversionId)  // B start     
+          .then(fileStatusJson => fileStatusJson.json()) //convierte la respuesta de convertio a json a javascript (esta respuesta desde convertio indica si la conversion inicio con exito y devuelve una id para seguir el estado de la conversion del archivo)
+          .then( (fileStatusObject) => {    
+            fileStatus = fileStatusObject;
+
+            if(statusCheck(fileStatus)){
+              sendResponse(fileStatus,res);
+              clearInterval(interval);
+            }
+
+          }).catch(err => console.log(err)) // B end
+
+          if(statusConsults = 10){
+            console.log('la respuesta tardo mas de lo esperado')
+            clearInterval(interval);
+          }
+        
+        }, 4000)
+
+      }else{
+        res.send(response.error);
+      }
+
+
+
+  }).catch(err => console.log(err)) // A end
+  
+};
+
+
+
+
+
+
+
+
+
+//------------ FUNCTIONS --------------
+
+const sendFile = (requestToConvertio) => fetch('https://api.convertio.co/convert',fetchPostConfig(requestToConvertio));
+const getStatus = (id) => fetch('https://api.convertio.co/convert/'+ id + '/status');
+
+
+
+function statusCheck(statusResponse){ // checkea si el archivo esta listo
+  if(statusResponse.data.step == 'finish'){
+    return true;
+  }else{
+    return false;
   }
 }
 
-export const  convertioPostRequest = (req) =>{
+
+function sendResponse(statusResponse,res){
+  if(statusResponse.status == 'ok' && statusResponse.data.step == 'finish'){
+    let finalResponse = new convertioFinalResponse(statusResponse.data.output.url,statusResponse.data.output.size,statusResponse.status,statusResponse.error)           
+    return res.json(finalResponse);
+  }
 };
+
+
+const fetchPostConfig = (fetchPostRequest) => { 
+  return {
+    method: "POST",
+    body: JSON.stringify(fetchPostRequest),
+    headers: {"Content-type": "application/json; charset=UTF-8"}
+  }
+};
+
+
+//--------------------------------------
 
 export default convertioPostRequest;

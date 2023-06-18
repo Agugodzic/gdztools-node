@@ -1,4 +1,4 @@
-export class convertioRequest{
+export class convertioFinalResponse{
   url;
   size;
   convertionStatus;

@@ -3,3 +3,4 @@ ngrok.exe
 .env
 env.js
 .vercel
+node_modules

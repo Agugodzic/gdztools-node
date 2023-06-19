@@ -5,7 +5,7 @@ import { convertioFinalResponse } from '../../Models/fileConverter/convertioFina
 const config = env;
 
 
-// ----------------- CONTROLLERS ----------------------
+// ----------------- CONTROLLERS ------------------  //
 
 
 
@@ -70,7 +70,7 @@ export const  convertioPostRequest = (req,res) =>{
 
 
 
-//------------ FUNCTIONS --------------
+// ------------ FUNCTIONS -------------- //
 
 const sendFile = (requestToConvertio) => fetch('https://api.convertio.co/convert',fetchPostConfig(requestToConvertio));
 const getStatus = (id) => fetch('https://api.convertio.co/convert/'+ id + '/status');

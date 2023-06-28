@@ -11,7 +11,9 @@ const DB = db;
 app.use(express.json({limit:'50mb'}));
 app.use(morgan('dev'));
 
-app.use(cors('https://fileconverter.gdztools.com'));
+app.use(cors({
+  origin:"https://fileconverter.gdztools.com"
+}));
 
 (async ()=> {
   try{

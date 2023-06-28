@@ -1,18 +1,12 @@
-import  env  from '../../../env.js';
+//import  env  from '../../../env.js';
 import { convertioRequest } from '../../Models/fileConverter/convertioRequest.js';
 import { convertioFinalResponse } from '../../Models/fileConverter/convertioFinalResponse.js';
 
-const config = env;
+//const config = env;
 
+const config = process.env;
 
 // ----------------- CONTROLLERS ------------------  //
-
-
-
-
-
-
-
 
 
 export const  convertioPostRequest = (req,res) =>{

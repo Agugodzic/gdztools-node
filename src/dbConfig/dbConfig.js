@@ -1,10 +1,10 @@
 import Sequelize from "sequelize";
 import mysql2 from 'mysql2';
 
-import env from '../../env.js'
+//import env from '../../env.js'
 
-const config = env;
-//const config = process.env;
+//const config = env;
+const config = process.env;
 
 const db = new Sequelize(config.DATABASE_NAME, config.DB_USER_NAME , config.DB_PASSWORD, {
 

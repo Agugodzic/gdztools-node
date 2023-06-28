@@ -26,7 +26,7 @@ app.use(cors({}));
 })();
 
 app.get("/",(req,res)=>{
-  res.send("<p>Pupita Pet Shop - Api</p>")
+  res.send("<p>GdzTools - Api</p>")
 });
 
 app.use(categorieRouter);
